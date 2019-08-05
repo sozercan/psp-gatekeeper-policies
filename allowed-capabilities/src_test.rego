@@ -1,9 +1,21 @@
 package k8spspallowedcapabilities
 
-test_input_container_not_allowed_capabilities_allowed {
+test_input_allowed_capabilities_allowed_all {
+    input := { "review": input_review, "parameters": input_parameters_wildcard}
+    results := violation with input as input
+    count(results) == 0
+}
+
+test_input_allowed_capabilities_allowed_in_list {
     input := { "review": input_review, "parameters": input_parameters_in_list}
     results := violation with input as input
     count(results) == 0
+}
+
+test_input_allowed_capabilities_allowed_not_in_list {
+    input := { "review": input_review, "parameters": input_parameters_not_in_list}
+    results := violation with input as input
+    count(results) > 0
 }
 
 input_review = {
@@ -26,27 +38,30 @@ input_containers_one = [
 
 input_capabilities = [
 {
-    "capabilities":
-        "add":
-          - SYS_TIME
+    "capabilities": {
+      "add": [
+        "SYS_TIME",
+        "SYS_ADMIN"
+      ]
+    }
 }]
 
 
 input_parameters_wildcard = {
-     "allowedCapabilities": [
-         "*"
+    "allowedCapabilities": [
+        "*"
     ]
 }
 
 input_parameters_in_list = {
-     "allowedCapabilities": [
-         "SYS_TIME",
+    "allowedCapabilities": [
+        "SYS_TIME",
     ]
 }
 
 input_parameters_not_in_list = {
-     "allowedCapabilities": [
-         "NET_ADMIN",
-         "DAC_READ_SEARCH"
+    "allowedCapabilities": [
+        "NET_ADMIN",
+        "DAC_READ_SEARCH"
     ]
 }
